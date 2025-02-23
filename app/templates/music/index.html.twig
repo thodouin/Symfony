@@ -8,7 +8,7 @@
     <a href="{{ path('app_music_new') }}">Ajouter une musique</a>
     <ul>
         {% for music in musicsList %}
-            <li>{{ music.name }}</li>
+        <li><a href="{{ path('app_music_show', {'id': music.id}) }}">{{ music.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

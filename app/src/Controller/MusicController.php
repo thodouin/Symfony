@@ -48,4 +48,12 @@ final class MusicController extends AbstractController
 
         ]);
     }
+
+    #[Route('/music/{id}', name: 'app_music_show')]
+public function show(Music $music): Response
+{
+    return $this->render('music/show.html.twig', [
+        'music' => $music,
+    ]);
+}
 }
