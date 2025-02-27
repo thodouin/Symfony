@@ -4,6 +4,7 @@
 
 {% block body %}
     <h1>{{ music.name }}</h1>
+    <h2> {{music.auteur }}</h2>
     <p><a href="{{ music.url }}" target="_blank">Écouter la musique</a></p>
     <a href="{{ path('app_music') }}">Retour à la liste</a>
 {% endblock %}
