@@ -2,35 +2,28 @@
 
 namespace App\Entity;
 
-use App\Repository\MusicRepository;
+use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MusicRepository::class)]
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class Music
+class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 25)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $url = null;
-
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $auteur = null;
-
-    #[ORM\ManyToOne(inversedBy: 'musics')]
-    private ?Category $category = null;
 
     #[ORM\PrePersist]
     public function setTimestampsValue(): void
@@ -39,6 +32,17 @@ class Music
         $this->createdAt = new \DateTimeImmutable();
         }
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * @var Collection<int, Music>
+     */
+    #[ORM\OneToMany(targetEntity: Music::class, mappedBy: 'category')]
+    private Collection $musics;
+
+    public function __construct()
+    {
+        $this->musics = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,14 +62,32 @@ class Music
         return $this;
     }
 
-    public function getUrl(): ?string
+    /**
+     * @return Collection<int, Music>
+     */
+    public function getMusics(): Collection
     {
-        return $this->url;
+        return $this->musics;
     }
 
-    public function setUrl(string $url): static
+    public function addMusic(Music $music): static
     {
-        $this->url = $url;
+        if (!$this->musics->contains($music)) {
+            $this->musics->add($music);
+            $music->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMusic(Music $music): static
+    {
+        if ($this->musics->removeElement($music)) {
+            // set the owning side to null (unless already changed)
+            if ($music->getCategory() === $this) {
+                $music->setCategory(null);
+            }
+        }
 
         return $this;
     }
@@ -90,30 +112,6 @@ class Music
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getAuteur(): ?string
-    {
-        return $this->auteur;
-    }
-
-    public function setAuteur(?string $auteur): static
-    {
-        $this->auteur = $auteur;
-
-        return $this;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): static
-    {
-        $this->category = $category;
 
         return $this;
     }

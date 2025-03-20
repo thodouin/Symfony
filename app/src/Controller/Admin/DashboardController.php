@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Music;
+use App\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -27,5 +28,6 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Music', 'fas fa-list', Music::class);
+        yield MenuItem::linkToCrud('Category', 'fas fa-list', Category::class);
     }
 }
